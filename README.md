@@ -38,14 +38,23 @@ class DetermineMasterpiecePrice {
     public static void executeDetermineMasterpiecePrice()
     {
        BoughtPainting bp = new BoughtPainting();
-
+        bp.setClassification("Masterpiece");
         bp.readInRecord();
         double area =bp.getHeight()*bp.getWidth();
+        boolean choice=false;
         double suggestedMaximumPurchasePrice=calculateMasterpiecePrice(bp.getArtistLastName(), bp.getSubject(), bp.getMedium(),area, bp.getDateofWork() );
-
-        if ( userBuyChoice(suggestedMaximumPurchasePrice))
-
-                bp.addRecentlyBought();
+        if (suggestedMaximumPurchasePrice==0)
+        {
+            choice=false;
+        }
+        else choice = userBuyChoice(suggestedMaximumPurchasePrice);
+        if ( choice)
+        {
+            bp.setSuggestedMaximumPurchasePrice(suggestedMaximumPurchasePrice);
+            bp.addRecentlyBought();
+            UserInterface.pressEnter();
+        }
+                
         else UserInterface.pressEnter();
     }
 
@@ -60,10 +69,7 @@ class DetermineMasterpiecePrice {
         AuctionPainting ap = new AuctionPainting();
 
     	double auctionPurchasePrice=ap.findPrice(artistLastName, subject, medium, area);
-        if (auctionPurchasePrice==0)
-        {
-            UserInterface.pressEnter();
-        }
+
     	Date currentDate =new Date();
     	Calendar cal = Calendar.getInstance();
         cal.setTime(dateOfWork);
@@ -91,7 +97,7 @@ class DetermineMasterpiecePrice {
     //Return: a boolean value based on the user’s input
     public static boolean userBuyChoice(double d)
     {
-    	System.out.println("The price is" +d +". Do you want to buy? y/n");
+    	System.out.println("The price is " +d +". Do you want to buy? y/n");
     	String choice=UserInterface.getString();
         while (!choice.equalsIgnoreCase("y")&&!choice.equalsIgnoreCase("n"))
         {
