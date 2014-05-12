@@ -35,7 +35,7 @@ class DetermineMasterpiecePrice {
     //Post: The user will have viewed the suggested maximum price for
     //  the painting they want to buy. If they chose to buy it, the files are
     //  now updated accordingingly.
-    public  void executeDetermineMasterpiecePrice()
+    public static void executeDetermineMasterpiecePrice()
     {
        BoughtPainting bp = new BoughtPainting();
 
@@ -54,7 +54,7 @@ class DetermineMasterpiecePrice {
     //  auction purchase price, the user must have entered
     //  the date of the work correctly
     //Return: the price of the Masterwork
-    public double calculateMasterpiecePrice(String artistLastName, String subject, String medium, double area, Date dateOfWork)
+    public static double calculateMasterpiecePrice(String artistLastName, String subject, String medium, double area, Date dateOfWork)
     {
 
         AuctionPainting ap = new AuctionPainting();
