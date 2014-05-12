@@ -1,95 +1,109 @@
-DetermineMasterpiecePrice
-=========================
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+/**
+ *
+ * @author katiejesperson
+ */
+ package oglesby;
+
 import java.util.*;
 
-public class DetermineMasterpiecePrice
-{
+import java.io.*;
 
-private String artistFirstName;
-private String artistLastName;
-private String titleOfWork;
-private String classification;
-//private date dateOfWork;
-private double height;
-private double width;
-private String medium;
-private String subject;
-private double suggestedMaximumPurchasePrice;
+class DetermineMasterpiecePrice {
 
 
 
-    //Desc: constructor for DetermineOtherWorkPrice
-	//Post: allows class to set the value of all Painting fields 
-    // in a record
-    public DetermineMasterpiecePrice(String fname, String lname, String work, String clas, double h,double w, String med, String sub, double max)
+
+    //Desc: constructor for DetermineMasterpiecePrice
+     //Post: Creates a new DetermineMasterpiecePrice
+    public DetermineMasterpiecePrice()
     {
-		artistFirstName=fname;
-		artistLastName=lname;
-		titleOfWork=work;
-	//	dateOfWork=dwork
-		classification=clas;
-		height=h;
-		width=w;
-		medium=med;
-		subject=sub;
-		suggestedMaximumPurchasePrice=max;
+        executeDetermineMasterpiecePrice();
     }
 
+    //Desc: Executes the major methods that allow a user to buy a painting.
+    //  First the user must input values, then the user will view the
+    //  suggested price. If the user chooses by buy then the bought painting
+    //  file will be updated, otherwise the user can go back to the main
+    //  menu
+    //Pre: The coefficient of similarity must not be zero, otherwise
+    //  the user is not interested in buying the painting.
+    //Post: The user will have viewed the suggested maximum price for
+    //  the painting they want to buy. If they chose to buy it, the files are
+    //  now updated accordingingly.
+    public  void executeDetermineMasterpiecePrice()
+    {
+       BoughtPainting bp = new BoughtPainting();
 
+        bp.readInRecord();
+        double area =bp.getHeight()*bp.getWidth();
+        double suggestedMaximumPurchasePrice=calculateMasterpiecePrice(bp.getArtistLastName(), bp.getSubject(), bp.getMedium(),area, bp.getDateofWork() );
 
+        if ( userBuyChoice(suggestedMaximumPurchasePrice))
 
-    //Desc: Looks through the bought file for paintings by the same artist
-    //and computes the coefficient of similarity for that painting. 
-    //It will return the purchase price for the painting with the 
-    //highest coefficient of similarity
-    //Pre: There must be another painting by the same artist in 
-    //the painting file
-    //Return: The price of the painting with the highest coefficient
-    //of similarity
-    public static double findLargestCoefficientofSimilarity()
+                bp.addRecentlyBought();
+        else UserInterface.pressEnter();
+    }
+
+    //Desc: calculate the price for the Masterwork the user wants to buy
+    //Pre: there must be a most similar work and that work must have a an
+    //  auction purchase price, the user must have entered
+    //  the date of the work correctly
+    //Return: the price of the Masterwork
+    public double calculateMasterpiecePrice(String artistLastName, String subject, String medium, double area, Date dateOfWork)
     {
 
-    	double coeff=0;
-    	double dummycoeff=0;
-    	int score1=0;
-    	int score2=0;
-    	double largerarea=0;
-    	double smallerArea=0;
-    	double suggestMaxPrice=0;
+        AuctionPainting ap = new AuctionPainting();
 
-       // create  determineMostSimilarWork object
-
-     /*   loop through array for bought paintings objects
+    	double auctionPurchasePrice=ap.findPrice(artistLastName, subject, medium, area);
+        if (auctionPurchasePrice==0)
         {
-        	find(artistname)
-        	score1=computeScore(getmedium(), medium)
-    		score2=computeScore(getsubject(), subject)
-        	smallerArea=width*height 
-        	largerArea=getWidth()*getHeight() 
-    		largerarea=compareReturnLarger(largerarea, smallerArea)
-    		smallerArea=compareReturnSmaller(largerarea, smallerArea)
-			dummycoeff=computeCoefficientofSimilarity(score1, 
-                        smallerArea, largerarea)
-			if (coeff<dummycoeff)
-			{
-				coeff=dummycoeff
-				suggestMaxPrice=maxpurchaseprice
-			}
-    	}*/
-    	return suggestMaxPrice;
+            UserInterface.pressEnter();
+        }
+    	Date currentDate =new Date();
+    	Calendar cal = Calendar.getInstance();
+        cal.setTime(dateOfWork);
+        int dateOfWorkYear = cal.get(Calendar.YEAR);
+
+        cal.setTime(ap.getDateofAuction());
+        int dateOfAuctionYear = cal.get(Calendar.YEAR);
+
+        cal.setTime(currentDate);
+        int currentDateYear = cal.get(Calendar.YEAR);
+
+
+
+        double masterpiecePrice = auctionPurchasePrice* Math.pow((1+.085), currentDateYear-dateOfAuctionYear);
+
+        return masterpiecePrice;
+
+
     }
-    
-    //Desc: calculate the price for the Masterpiece the user wants to buy
-    //Pre: there must be a most similar work and that work must have a an 
-    //auction purchase price, the user must have entered the 
-    // date of the work correctly
-    //Return: the price of the Masterpiece 
-    public static double calculateMasterpiecePrice()
+
+
+    //Desc: display a value to the user and the user responds
+    //  which is returned as a true or false value
+    //Pre: the argument must be a double value
+    //Return: a boolean value based on the user’s input
+    public static boolean userBuyChoice(double d)
     {
-    	double auctionPurchasePrice=findLargestCoefficientofSimilarity();
-    	int currentYear=2014;//getDate()
-    	int auctionYear =2000;// dateOfWork
-    	return auctionPurchasePrice;//*(8.5)^((1/auctionYear)-currentYear) + 1;
+    	System.out.println("The price is" +d +". Do you want to buy? y/n");
+    	String choice=UserInterface.getString();
+        while (!choice.equalsIgnoreCase("y")&&!choice.equalsIgnoreCase("n"))
+        {
+            System.out.println("Please enter the correct format, either y or n");
+            System.out.println("The price is" +d +". Do you want to buy? y/n");
+            choice=UserInterface.getString();
+        }
+
+        if (choice.equalsIgnoreCase("y")) return true;
+        else return false;
+
+
     }
+
 }
-    
