@@ -66,16 +66,21 @@ class DetermineMasterpiecePrice {
     public static double calculateMasterpiecePrice(String artistLastName, String subject, String medium, double area, Date dateOfWork)
     {
 
-        AuctionPainting ap = new AuctionPainting();
+        DetermineMostSimilarWork ap = new DetermineMostSimilarWork();
+        Date auctiondate;
 
     	double auctionPurchasePrice=ap.findPrice(artistLastName, subject, medium, area);
+        if (auctionPurchasePrice==0)
+        {
+            return 0;
+        }
 
     	Date currentDate =new Date();
     	Calendar cal = Calendar.getInstance();
-        cal.setTime(dateOfWork);
-        int dateOfWorkYear = cal.get(Calendar.YEAR);
 
-        cal.setTime(ap.getDateofAuction());
+
+        auctiondate=ap.findDate(artistLastName, subject, medium, area);
+        cal.setTime(auctiondate);
         int dateOfAuctionYear = cal.get(Calendar.YEAR);
 
         cal.setTime(currentDate);
