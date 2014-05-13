@@ -69,7 +69,7 @@ class DetermineMasterpiecePrice {
         DetermineMostSimilarWork ap = new DetermineMostSimilarWork();
         Date auctiondate;
 
-    	double auctionPurchasePrice=ap.findPrice(artistLastName, subject, medium, area);
+    	double auctionPurchasePrice=ap.findPrice(artistLastName,  medium,subject, area);
         if (auctionPurchasePrice==0)
         {
             return 0;
@@ -79,7 +79,7 @@ class DetermineMasterpiecePrice {
     	Calendar cal = Calendar.getInstance();
 
 
-        auctiondate=ap.findDate(artistLastName, subject, medium, area);
+        auctiondate=ap.findDate(artistLastName,  medium, subject,  area);
         cal.setTime(auctiondate);
         int dateOfAuctionYear = cal.get(Calendar.YEAR);
 
@@ -107,7 +107,7 @@ class DetermineMasterpiecePrice {
         while (!choice.equalsIgnoreCase("y")&&!choice.equalsIgnoreCase("n"))
         {
             System.out.println("Please enter the correct format, either y or n");
-            System.out.println("The price is" +d +". Do you want to buy? y/n");
+            System.out.println("The price is " +d +". Do you want to buy? y/n");
             choice=UserInterface.getString();
         }
 
