@@ -20,7 +20,7 @@ class DetermineMasterpiecePrice {
 
 
     //Desc: constructor for DetermineMasterpiecePrice
-     //Post: Creates a new DetermineMasterpiecePrice
+    //Post: Creates a new DetermineMasterpiecePrice
     public DetermineMasterpiecePrice()
     {
         executeDetermineMasterpiecePrice();
